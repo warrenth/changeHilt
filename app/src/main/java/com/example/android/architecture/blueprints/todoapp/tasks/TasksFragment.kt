@@ -53,15 +53,11 @@ class TasksFragment : Fragment() {
 
     private lateinit var listAdapter: TasksAdapter
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+
         viewDataBinding = TasksFragBinding.inflate(inflater, container, false).apply {
             viewmodel = viewModel
         }
-        setHasOptionsMenu(true)
         return viewDataBinding.root
     }
 
@@ -89,16 +85,17 @@ class TasksFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        // Set the lifecycle owner to the lifecycle of the view
+        //Set the lifecycle owner to the lifecycle of the view
         viewDataBinding.lifecycleOwner = this.viewLifecycleOwner
         setupSnackbar()
         setupListAdapter()
-        setupRefreshLayout(viewDataBinding.refreshLayout, viewDataBinding.tasksList)
+        setupRefreshLayout(viewDataBinding.refreshLayout, viewDataBinding.tasksList) //extention을 이용한 처리
         setupNavigation()
         setupFab()
     }
 
     private fun setupNavigation() {
+        // viewLifecyclerOwner(Fragment)를 넣어준다. lifecyclerOwner(Actvity) 아님
         viewModel.openTaskEvent.observe(viewLifecycleOwner, EventObserver {
             openTaskDetails(it)
         })
@@ -157,8 +154,8 @@ class TasksFragment : Fragment() {
 
     private fun setupListAdapter() {
         val viewModel = viewDataBinding.viewmodel
-        if (viewModel != null) {
-            listAdapter = TasksAdapter(viewModel)
+        if(viewModel != null) {
+            listAdapter = TasksAdapter(viewModel) //Adapter 생성시에 viewModel을 넣고 있다.
             viewDataBinding.tasksList.adapter = listAdapter
         } else {
             Timber.w("ViewModel not initialized when attempting to set up adapter.")
